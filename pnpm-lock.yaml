@@ -60,6 +60,9 @@ importers:
       svelte:
         specifier: ^5.0.0-next.1
         version: 5.0.0-next.269
+      svelte-adapter-azure-swa:
+        specifier: ^0.20.1
+        version: 0.20.1(@sveltejs/kit@2.7.1(@sveltejs/vite-plugin-svelte@4.0.0-next.8(svelte@5.0.0-next.269)(vite@5.4.9))(svelte@5.0.0-next.269)(vite@5.4.9))
       svelte-check:
         specifier: ^4.0.0
         version: 4.0.5(svelte@5.0.0-next.269)(typescript@5.6.3)
@@ -1799,6 +1802,11 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
+  svelte-adapter-azure-swa@0.20.1:
+    resolution: {integrity: sha512-drB66G7SYamQyvwBAvtNHj8HMM5w+TWwc53RctvcdtIad9wO8wqbSN9+fescfja+OAIcfmlRGxUzIsRibY6DNg==}
+    peerDependencies:
+      '@sveltejs/kit': ^2.0.0
+
   svelte-check@4.0.5:
     resolution: {integrity: sha512-icBTBZ3ibBaywbXUat3cK6hB5Du+Kq9Z8CRuyLmm64XIe2/r+lQcbuBx/IQgsbrC+kT2jQ0weVpZSSRIPwB6jQ==}
     engines: {node: '>= 18.0.0'}
@@ -3411,6 +3419,12 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  svelte-adapter-azure-swa@0.20.1(@sveltejs/kit@2.7.1(@sveltejs/vite-plugin-svelte@4.0.0-next.8(svelte@5.0.0-next.269)(vite@5.4.9))(svelte@5.0.0-next.269)(vite@5.4.9)):
+    dependencies:
+      '@sveltejs/kit': 2.7.1(@sveltejs/vite-plugin-svelte@4.0.0-next.8(svelte@5.0.0-next.269)(vite@5.4.9))(svelte@5.0.0-next.269)(vite@5.4.9)
+      esbuild: 0.19.12
+      set-cookie-parser: 2.7.0
 
   svelte-check@4.0.5(svelte@5.0.0-next.269)(typescript@5.6.3):
     dependencies:
