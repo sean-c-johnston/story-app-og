@@ -2,8 +2,6 @@
 	import { enhance } from '$app/forms';
 
 	const { data } = $props();
-
-	console.log(data);
 </script>
 
 <div class="container mx-auto w-dvw h-dvh">
@@ -23,10 +21,10 @@
 		<form action="?/add" method="post" use:enhance>
 			<div class="flex flex-col mt-8">
 				{#if data.story.length === 0}
-					<button class="btn my-2" type="submit" name="chosenQuestion" value="begin">Tell me a story!</button>
+					<button class="btn my-2" type="submit" name="chosenQuestion" value="Tell me a story!">Tell me a story!</button>
 				{/if}
-				{#each data.questions as question, i}
-					<button class="btn my-2" type="submit" name="chosenQuestion" value={i}>{question}</button>
+				{#each data.questions as question}
+					<button class="btn my-2" type="submit" name="chosenQuestion" value={question}>{question}</button>
 				{/each}
 			</div>
 		</form>
