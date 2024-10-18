@@ -23,9 +23,9 @@
 
 		<form action="?/add" method="post" use:enhance>
 			<div class="flex flex-col">
-				<button class="btn my-2" type="submit" value="1">Choose Option 1</button>
-				<button class="btn my-2" type="submit" value="2">Choose Option 2</button>
-				<button class="btn my-2" type="submit" value="3">Choose Option 3</button>
+				{#each data.questions as question, i}
+					<button class="btn my-2" type="submit" value={i}>{question}</button>
+				{/each}
 			</div>
 		</form>
 	</div>
