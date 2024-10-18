@@ -10,9 +10,9 @@
 	<div class="flex flex-col h-full py-4 items-center">
 		<div class="relative h-3/5 w-5/6">
 			<div class="flex flex-col items-center w-full h-full overflow-scroll py-20">
-				{#each data.chapters as chapter}
-					<div class="card bg-secondary p-4 my-6 text-center prose">
-						<p>{chapter.text}</p>
+				{#each data.story as storySegment}
+					<div class="{storySegment.type === 'chapter' ? 'card bg-accent' : 'card bg-secondary'} p-4 my-2 text-center prose">
+						<p>{storySegment.text}</p>
 					</div>
 				{/each}
 			</div>
@@ -22,8 +22,11 @@
 
 		<form action="?/add" method="post" use:enhance>
 			<div class="flex flex-col mt-8">
+				{#if data.story.length === 0}
+					<button class="btn my-2" type="submit" name="chosenQuestion" value="begin">Tell me a story!</button>
+				{/if}
 				{#each data.questions as question, i}
-					<button class="btn my-2" type="submit" value={i}>{question}</button>
+					<button class="btn my-2" type="submit" name="chosenQuestion" value={i}>{question}</button>
 				{/each}
 			</div>
 		</form>
