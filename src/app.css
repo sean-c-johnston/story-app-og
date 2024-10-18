@@ -2,4 +2,6 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+.click-through {
+    pointer-events: none;
 }

@@ -16,7 +16,7 @@
 					</div>
 				{/each}
 			</div>
-			<div class="bg-gradient-to-t from-base-100 to-transparent absolute bottom-0 w-full py-16"></div>
+			<div class="bg-gradient-to-t from-base-100 to-transparent absolute bottom-0 w-full py-16 click-through"></div>
 		</div>
 
 		<br />
