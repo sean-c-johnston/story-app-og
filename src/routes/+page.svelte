@@ -9,7 +9,7 @@
 		<div class="relative h-3/5 w-5/6">
 			<div class="flex flex-col items-center w-full h-full overflow-scroll py-20">
 				{#each data.story as storySegment}
-					<div class="{storySegment.type === 'chapter' ? 'card bg-accent' : 'card bg-secondary'} p-4 my-2 text-center prose">
+					<div class="{storySegment.type === 'chapter' ? 'card bg-secondary' : 'card bg-base-300'} p-4 my-2 text-center prose">
 						<p>{storySegment.text}</p>
 					</div>
 				{/each}
