@@ -5,7 +5,7 @@
 </script>
 
 <div class="container mx-auto w-dvw h-dvh">
-	<div class="flex flex-col h-full py-4 items-center">
+	<div class="flex flex-col h-full py-4 justify-between items-center">
 		<div class="relative h-3/5 w-5/6">
 			<div class="flex flex-col items-center w-full h-full overflow-scroll py-20">
 				{#each data.story as storySegment}
@@ -27,6 +27,9 @@
 					<button class="btn my-2" type="submit" name="chosenQuestion" value={question}>{question}</button>
 				{/each}
 			</div>
+		</form>
+		<form action="?/clear" method="post" use:enhance>
+			<button class="btn btn-warning" type="submit">Clear</button>
 		</form>
 	</div>
 </div>

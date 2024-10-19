@@ -17,7 +17,7 @@ interface AiResponse {
 	newQuestions: string[];
 }
 
-const story: StorySegment[] = [];
+let story: StorySegment[] = [];
 let questions: string[] = [];
 
 export const load: PageServerLoad = () => {
@@ -28,6 +28,10 @@ export const load: PageServerLoad = () => {
 };
 
 export const actions = {
+	clear: async () => {
+		story = [];
+		questions = [];
+	},
 	add: async ({ request }) => {
 		const formData = await request.formData();
 
