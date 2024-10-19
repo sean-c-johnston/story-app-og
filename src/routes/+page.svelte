@@ -7,6 +7,7 @@
 	let storyPanel: HTMLElement;
 
 	$effect(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		story;
 		storyPanel?.lastElementChild?.scrollIntoView({ behavior: 'smooth' });
 	})
@@ -17,7 +18,7 @@
 		<div class="relative h-3/5 w-5/6">
 			<div class="flex flex-col items-center w-full h-full overflow-scroll py-20" bind:this={storyPanel}>
 				{#each data.story as storySegment}
-					<div class="{storySegment.type === 'chapter' ? 'card bg-secondary' : 'card bg-base-300'} p-4 my-2 text-center prose">
+					<div class="{storySegment.type === 'section' ? 'card bg-secondary' : 'card bg-base-300'} p-4 my-2 text-center prose">
 						<p>{storySegment.text}</p>
 					</div>
 				{/each}
@@ -29,7 +30,7 @@
 		<form action="?/add" method="post" use:enhance>
 			<div class="flex flex-col mt-8">
 				{#if story.length === 0}
-					<button class="btn my-2" type="submit" name="chosenQuestion" value="Tell me a story!">Tell me a story!</button>
+					<button class="btn my-2" type="submit" name="chosenQuestion" value="Tell me a story">Tell me a story!</button>
 				{/if}
 				{#each data.questions as question}
 					<button class="btn my-2" type="submit" name="chosenQuestion" value={question}>{question}</button>

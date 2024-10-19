@@ -1,10 +1,11 @@
 export interface StorySegment {
 	id: string;
-	type: 'prompt' | 'chapter';
+	type: 'prompt' | 'section' | 'answer';
 	text: string;
 }
 
 export interface AiResponse {
-	nextChapter: string;
-	newQuestions: string[];
+	section: string;
+	questions: string[];
+	questionAnswer: string | null | undefined;
 }

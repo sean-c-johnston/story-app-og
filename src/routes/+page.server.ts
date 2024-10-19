@@ -1,6 +1,6 @@
 import type { Actions, PageServerLoad } from './$types';
 import { getNextChapterFromOpenAi } from '$lib/aiService';
-import type { StorySegment, AiResponse } from '$lib/types';
+import type { AiResponse, StorySegment } from '$lib/types';
 
 let story: StorySegment[] = [];
 let questions: string[] = [];
@@ -26,7 +26,7 @@ export const actions = {
 	clear: async () => {
 		story = [];
 		questions = [];
-	},
+	}
 } satisfies Actions;
 
 function updateServerState(chosenQuestion: string, response: AiResponse) {
@@ -35,10 +35,19 @@ function updateServerState(chosenQuestion: string, response: AiResponse) {
 		type: 'prompt',
 		text: chosenQuestion
 	});
+
+	// if (response.questionAnswer) {
+	// 	story.push({
+	// 		id: 'answer_id',
+	// 		type: 'answer',
+	// 		text: response.questionAnswer || ''
+	// 	});
+	// }
+
 	story.push({
 		id: 'new id',
-		type: 'chapter',
-		text: response.nextChapter
+		type: 'section',
+		text: response.section
 	});
-	questions = response.newQuestions;
+	questions = response.questions;
 }
