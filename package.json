@@ -42,6 +42,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@supabase/ssr": "^0.5.1",
+		"@supabase/supabase-js": "^2.45.6",
 		"drizzle-orm": "^0.31.2",
 		"openai": "^4.68.1",
 		"postgres": "^3.4.4",
