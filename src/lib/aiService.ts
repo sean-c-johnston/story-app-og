@@ -47,8 +47,6 @@ export async function getNextChapterFromOpenAi(
 	// todo: null check r
 	const r = completion.choices[0].message.parsed!;
 
-	console.log(r.question_answer);
-
 	return {
 		section: r.section,
 		questions: r.questions,
