@@ -1,5 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
+import { generateAStory } from '$lib/aiService';
 
 const stories: { [userId: string]: string[] } = {};
 const questions: { [userId: string]: string[] } = {};
@@ -17,13 +18,21 @@ export const load: PageServerLoad = async ({ locals: { safeGetSession } }) => {
 };
 
 export const actions = {
+	// todo: rename 'add'
 	add: async ({ locals: { safeGetSession } }) => {
 		const { user } = await safeGetSession();
 
-		const oldStory = getStoryFor(user.id);
-		oldStory.push('hello');
+		const { story } = await generateAStory();
 
-		setStoryFor(user.id, oldStory);
+		let allText = "";
+
+		for (const chapter of story.chapters){
+			for (const paragraph of chapter.paragraphs) {
+				allText += paragraph;
+			}
+		}
+
+		setStoryFor(user.id, allText);
 
 		return null;
 	},

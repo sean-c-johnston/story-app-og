@@ -17,11 +17,7 @@
 <div class="flex flex-col h-full py-4 justify-between items-center">
   <div class="relative h-3/5 w-5/6">
     <div class="flex flex-col items-center w-full h-full overflow-scroll py-20" bind:this={storyPanel}>
-      {#each data.story as storySegment}
-        <div>
-          <p>{storySegment}</p>
-        </div>
-      {/each}
+      <div class="prose card bg-secondary p-4">{data.story}</div>
     </div>
     <div class="bg-gradient-to-b from-base-100 to-transparent absolute top-0 w-full py-8 click-through"></div>
     <div class="bg-gradient-to-t from-base-100 to-transparent absolute bottom-0 w-full py-8 click-through"></div>
