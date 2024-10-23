@@ -1,30 +1,30 @@
-import { getNextChapterFromOpenAi } from '$lib/aiService';
 import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import type { AiResponse, StorySegment } from '$lib/types';
-import type { User } from '@supabase/supabase-js';
+import type { StorySegment } from '$lib/types';
 
-const stories: { [userId: string]: StorySegment[] } = {};
+const stories: { [userId: string]: string[] } = {};
 const questions: { [userId: string]: string[] } = {};
+
+const getStoryFor = (userId: string) => stories[userId] || [];
+const setStoryFor = (userId: string, story: string[]) => (stories[userId] = story);
 
 export const load: PageServerLoad = async ({ locals: { safeGetSession } }) => {
 	const { user } = await safeGetSession();
+
 	return {
-		story: stories[user.id] || [],
+		story: getStoryFor(user.id),
 		questions: questions[user.id] || []
 	};
 };
 
 export const actions = {
-	add: async ({ request, locals: { safeGetSession } }) => {
+	add: async ({ locals: { safeGetSession } }) => {
 		const { user } = await safeGetSession();
 
-		const formData = await request.formData();
-		const chosenQuestion = formData.get('chosenQuestion') as string;
+		const oldStory = getStoryFor(user.id);
+		oldStory.push('hello');
 
-		const openAiResponse = await getNextChapterFromOpenAi(stories[user.id], chosenQuestion);
-
-		updateServerState(user, chosenQuestion, openAiResponse);
+		setStoryFor(user.id, oldStory);
 
 		return null;
 	},
@@ -44,22 +44,3 @@ export const actions = {
 		redirect(307, '/');
 	}
 } satisfies Actions;
-
-function updateServerState(user: User, chosenQuestion: string, response: AiResponse) {
-	const newStory = [...stories[user.id]];
-
-	newStory.push({
-		id: 'chosen id',
-		type: 'prompt',
-		text: chosenQuestion
-	});
-
-	newStory.push({
-		id: 'new id',
-		type: 'section',
-		text: response.section
-	});
-
-	stories[user.id] = newStory;
-	questions[user.id] = response.questions;
-}
