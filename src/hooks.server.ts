@@ -43,7 +43,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	const { user } = await event.locals.safeGetSession();
 	if (shouldProtectRoute(event.route.id) && !user) {
-		redirect(307, '/auth'); // render the error.svelte page where you check for 401 and optionally render a login component
+		redirect(307, '/auth');
 	}
 
 	return resolve(event, {
@@ -54,6 +54,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 };
 
 function shouldProtectRoute(routeId: string | null) {
+	console.log(`route is ${routeId}`);
+
 	const route = routeId || '';
-	return route.startsWith('/(protected)/');
+	return route.startsWith('/(protected)');
 }

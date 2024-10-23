@@ -37,6 +37,7 @@
   </form>
   <form action="?/logout" method="post">
     <div class="flex flex-row justify-end w-full">
-      <button class="btn btn-error" type="submit">Sign out</button>
+      <button class="btn" type="submit">Sign out</button>
     </div>
+  </form>
 </div>

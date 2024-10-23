@@ -1,6 +1,5 @@
 import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import type { StorySegment } from '$lib/types';
 
 const stories: { [userId: string]: string[] } = {};
 const questions: { [userId: string]: string[] } = {};
