@@ -13,20 +13,21 @@ export const load: PageServerLoad = async ({ url, locals: { safeGetSession } }) 
 };
 
 export const actions: Actions = {
-	default: async (event) => {
-		const {
-			request,
-			locals: { supabase }
-		} = event;
+	default: async ({ request, url, locals: { supabase } }) => {
 		const formData = await request.formData();
 		const email = formData.get('email') as string;
-		const validEmail = /^[\w-\.+]+@([\w-]+\.)+[\w-]{2,8}$/.test(email);
 
+		const validEmail = /^[\w-\.+]+@([\w-]+\.)+[\w-]{2,8}$/.test(email);
 		if (!validEmail) {
 			return fail(400, { errors: { email: 'Please enter a valid email address' }, email });
 		}
 
-		const { error } = await supabase.auth.signInWithOtp({ email });
+		const { error } = await supabase.auth.signInWithOtp({
+			email,
+			options: {
+				emailRedirectTo: url.origin
+			}
+		});
 
 		if (error) {
 			return fail(400, {
