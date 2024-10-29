@@ -1,11 +1,10 @@
 import Stripe from 'stripe';
 import { STRIPE_SECRET_KEY, STRIPE_SECRET_WEBHOOK_KEY } from '$env/static/private';
+import { userSubscriptionsRepository } from '$lib/server/supabase-queries/userSubscriptionsRepository';
 
 const stripe = new Stripe(STRIPE_SECRET_KEY);
 
-const oneDayInSeconds = 24 * 60 * 60;
-
-export async function POST({ request, locals: { supabaseServiceClient } }) {
+export async function POST({ request }) {
 	const body = await request.text();
 	const sig = request.headers.get('Stripe-Signature') as string;
 
@@ -24,50 +23,45 @@ export async function POST({ request, locals: { supabaseServiceClient } }) {
 	try {
 		switch (event.type) {
 			case 'customer.subscription.deleted': {
-				const subscription = event.data.object;
+				const { customer, id: subscriptionId } = event.data.object;
+				const customerId = typeof customer === 'string' ? customer : customer.id;
 
-				console.log('Subscription deleted');
+				console.log(
+					`Subscription ${subscriptionId} / ${customerId} ended, setting status to canceled`
+				);
 
-				const { error } = await supabaseServiceClient
-					.from('user_subscriptions')
-					.update({
-						subscription_expiry: new Date().toISOString(),
-						status: 'canceled'
-					})
-					.match({
-						// todo: user id too???
-						stripe_customer_id: subscription.customer,
-						stripe_subscription_id: subscription.id
-					});
-				console.log(error);
+				const { error } = await userSubscriptionsRepository.cancel(customerId, subscriptionId);
+
+				if (error) console.error(error);
 
 				break;
 			}
 			case 'invoice.paid': {
 				const invoice = event.data.object;
 
-				// subscribe, here, and cancel
-				// all need to assume multiple rows and operate based on subscription id
-
 				const subscriptionId = String(invoice.subscription);
 				const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-				const userId = subscription.metadata['appUserId'];
 
-				const oneDayAfterSubExpires = subscription.current_period_end + oneDayInSeconds;
-				const newExpiryTimestamp = new Date(oneDayAfterSubExpires * 1000);
+				const userId = subscription.metadata['appUserId'];
+				const customerId =
+					typeof subscription.customer === 'string'
+						? subscription.customer
+						: subscription.customer.id;
+
+				const oneDay = 24 * 60 * 60;
+				const oneDayAfterSubExpires = subscription.current_period_end + oneDay;
+				const newExpiry = new Date(oneDayAfterSubExpires * 1000);
 
 				const subscriptionItem = subscription.items.data[0];
 				const price = subscriptionItem.price;
 
-				const updatedData = {
-					user_id: userId,
-					stripe_subscription_id: subscriptionId,
-					stripe_customer_id: subscription.customer,
-					subscription_expiry: newExpiryTimestamp.toISOString(),
-					price_id: price.id,
-					status: 'active'
-				};
-				await supabaseServiceClient.from('user_subscriptions').upsert(updatedData);
+				await userSubscriptionsRepository.upsertActive({
+					userId,
+					subscriptionId,
+					customerId,
+					subscriptionExpiry: newExpiry,
+					priceId: price.id
+				});
 
 				break;
 			}

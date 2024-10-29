@@ -10,10 +10,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write .",
-		"db:push": "drizzle-kit push",
-		"db:migrate": "drizzle-kit migrate",
-		"db:studio": "drizzle-kit studio"
+		"format": "prettier --write ."
 	},
 	"devDependencies": {
 		"@stripe/stripe-js": "^4.9.0",
@@ -24,7 +21,6 @@
 		"@types/eslint": "^9.6.0",
 		"autoprefixer": "^10.4.20",
 		"daisyui": "^4.12.13",
-		"drizzle-kit": "^0.22.0",
 		"eslint": "^9.0.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.36.0",
@@ -45,7 +41,6 @@
 	"dependencies": {
 		"@supabase/ssr": "^0.5.1",
 		"@supabase/supabase-js": "^2.45.6",
-		"drizzle-orm": "^0.31.2",
 		"openai": "^4.68.1",
 		"postgres": "^3.4.4",
 		"stripe": "^17.2.1",

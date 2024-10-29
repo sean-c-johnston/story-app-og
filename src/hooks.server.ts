@@ -3,7 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 import { type Handle, redirect } from '@sveltejs/kit';
 import type { Database } from '../database.types';
 import { SUPABASE_SECRET_API_KEY } from '$env/static/private';
-import type { SupabaseClient, User } from '@supabase/supabase-js';
+import { userSubscriptionsRepository } from '$lib/server/supabase-queries/userSubscriptionsRepository';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.supabase = createServerClient<Database>(
@@ -21,15 +21,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 	);
 
-	event.locals.supabaseServiceClient = createServerClient<Database>(
-		PUBLIC_SUPABASE_URL,
-		SUPABASE_SECRET_API_KEY,
-		{
-			cookies: {
-				getAll: () => []
-			}
-		}
-	);
+	// event.locals.supabaseServiceClient = createServerClient<Database>(
+	// 	PUBLIC_SUPABASE_URL,
+	// 	SUPABASE_SECRET_API_KEY,
+	// 	{ cookies: { getAll: () => [] } }
+	// );
 
 	/**
 	 * Unlike `supabase.auth.getSession()`, which returns the session _without_
@@ -59,15 +55,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 	};
 
 	const { user } = await event.locals.safeGetSession();
-	const userIsSubscribed = user
-		? await userHasActiveSubscription(user, event.locals.supabase)
-		: false;
-
-	if (isLoginRequired(event.route.id) && !user) {
+	if (!user && routeRequiresLogin(event.route.id)) {
 		redirect(307, '/auth');
 	}
 
-	if (isSubscriptionRequired(event.route.id) && !userIsSubscribed) {
+	const userIsSubscribed = await userSubscriptionsRepository.userHasActiveSubscription(user);
+	if (!userIsSubscribed && routeRequiresSubscription(event.route.id)) {
 		redirect(307, '/subscribe');
 	}
 
@@ -78,29 +71,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 	});
 };
 
-function isLoginRequired(routeId: string | null) {
+function routeRequiresLogin(routeId: string | null) {
 	const route = routeId || '';
 	return route.startsWith('/(protected)');
 }
 
-function isSubscriptionRequired(routeId: string | null) {
+function routeRequiresSubscription(routeId: string | null) {
 	const route = routeId || '';
 	return route.includes('/(paid)');
 }
-
-const userHasActiveSubscription = async (user: User, supabase: SupabaseClient) => {
-	const { count } = await supabase
-		.from('user_subscriptions')
-		.select('stripe_subscription_id', { count: 'exact', head: true })
-		.eq('user_id', user.id)
-		.gte('subscription_expiry', new Date().toISOString())
-		.eq('status', 'active');
-
-	const numberOfResults = count ?? 0;
-
-	if (numberOfResults > 1) {
-		console.warn('Multiple active subscriptions found for user:', user.email, `(${user.id})`);
-	}
-
-	return numberOfResults > 0;
-};
